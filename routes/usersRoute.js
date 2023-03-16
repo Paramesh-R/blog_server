@@ -17,12 +17,10 @@ router.get('/', function (req, res, next) { res.send('respond with a resource') 
 router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.post('/logout', logoutProfile)
-// router.get('/profile', verifyProfile)
 
 
 router.get('/profile', async (req, res) => {
   const { blogtoken } = req.cookies;
-  console.log("--->START Profile validation<--- \n\n token: " + blogtoken)
 
   try {
     if (!blogtoken) {
@@ -35,7 +33,7 @@ router.get('/profile', async (req, res) => {
           console.log("\nJWT verify catch: " + err);
           res.status(401).send({ message: "Token Expired" })
         }
-        console.log(info)
+        console.log("Verify 200 or 304")
         res.status(200).json(info)
       })
     }
@@ -44,7 +42,6 @@ router.get('/profile', async (req, res) => {
     res.status(401).send('invalid token' + e)
   }
 
-  console.log("\n\n--->Exit Profile validation<---")
 })
 
 
@@ -54,7 +51,3 @@ router.get('/profile', async (req, res) => {
 
 module.exports = router;
 
-
-// <===============================================>
-// <====================LEGACY CODES===============>
-// <===============================================>

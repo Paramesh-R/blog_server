@@ -34,15 +34,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // <============= START Handle CORS ====================>
-const corsConfig0 = {
-  credentials: true,
-  origin: true,
-};
-const corsConfig1 = {
-  credentials: true,
-  origin: "*",
-};
-app.use(cors(corsConfig0));       // app.use(cors());
+const corsConfig0 = { credentials: true, origin: true, };
+const corsConfig1 = { credentials: true, origin: "*", };
+app.use(cors(corsConfig0));
 // <============= END Handle CORS ====================>
 
 
@@ -55,7 +49,7 @@ connectDB()
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
-app.use('/comment',commentRouter);
+app.use('/comment', commentRouter);
 
 
 // <===============ERROR 404==========================>

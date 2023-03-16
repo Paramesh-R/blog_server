@@ -1,11 +1,50 @@
 const Post = require('../models/postModel')
 
+const ITEMS_PER_PAGE = 9;
 
 // Get All Post Newest to Oldest
 const getAllPost = async (req, res) => {
-    await Post.find({}).sort({ createdAt: -1 })
-        .then(result => { res.status(200).send(result) })
-        .catch(err => console.log("Error: Get All Post Error", err))
+    const page = req.query.page || 1;
+    // Put all your query params here
+    console.log("Get post with DB Query")
+    console.log(req.query)
+
+
+    const author_query = req.query.author ? { 'author': req.query.author } : {};
+    console.log(author_query);
+
+    try {
+        const skip = (page - 1) * ITEMS_PER_PAGE  //Page 2: (1*5 =>5)
+        const count = await Post.count(author_query)
+        const pageCount = Math.ceil(count / ITEMS_PER_PAGE) || 1;
+
+        const items = await Post.find(author_query).sort({ createdAt: -1 }).limit(ITEMS_PER_PAGE).skip(skip)
+        // TEST
+        console.log("\n count:", count,
+            // "\n items:", items.length,
+            "\n pageCount:", pageCount,
+        )
+
+        // return {
+        /* pagination: {
+            count,
+            pageCount
+        }, */
+        res.status(200).send({ page, items, count, pageCount })
+        // }
+
+
+    } catch (err) {
+        console.log(err);
+        res.send(err)
+    }
+
+
+
+    // Old Method to get all post
+    // await Post.find({}).sort({ createdAt: -1 })
+    //     .then(result => { res.status(200).send(result) })
+    //     .catch(err => console.log("Error: Get All Post Error", err))
 }
 
 
@@ -98,7 +137,7 @@ const unComment = (req, res) => {
 }
 
 module.exports = {
-    getAllPost, 
+    getAllPost,
     // getMyPosts,
     createNewPost, updatePost, viewPost,
     // createUpdatePost,
